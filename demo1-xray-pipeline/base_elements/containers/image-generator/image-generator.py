@@ -24,12 +24,15 @@ s3client = boto3.client('s3', 'us-east-1', endpoint_url=service_point,
                         aws_secret_access_key=secret_key,
                         use_ssl=True if 'https' in service_point else False)
 
-s3sourceclient = boto3.client('s3', config=Config(signature_version=UNSIGNED))
-
 # Buckets
 bucket_source = os.environ['BUCKET_SOURCE']
 bucket_source_name = bucket_source.split('/')[-1]
+bucket_source_endpoint = bucket_source.rsplit('/',1)[0]
 bucket_destination = os.environ['BUCKET_BASE_NAME']
+
+s3sourceclient = boto3.client('s3', endpoint_url=bucket_source_endpoint,
+                                config=Config(signature_version=UNSIGNED),
+                                use_ssl=True if 'https' in bucket_source_endpoint else False)
 
 # Helper database
 db_user = os.environ['DATABASE_USER']
